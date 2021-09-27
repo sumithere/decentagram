@@ -19,6 +19,11 @@ class App extends Component {
   async componentWillUpdate() {
     // await this.loadWeb3()
     // await this.loadBlockchainData()
+    // if(this.state.size!=this.state.images.length){
+    //   this.setState({
+    //     size:this.state.images.length
+    //   })
+    // }
   }
 
   async loadWeb3() {
@@ -37,6 +42,8 @@ class App extends Component {
   async loadBlockchainData() {
     const web3 = window.web3
     // Load account
+    console.log(this.state.images.length);
+
     const accounts = await web3.eth.getAccounts()
     this.setState({ account: accounts[0] })
     // Network ID
@@ -48,8 +55,10 @@ class App extends Component {
       const imagesCount = await decentragram.methods.imageCount().call()
       this.setState({ imagesCount })
       // Load images
+    console.log(imagesCount);
       for (var i = 1; i <= imagesCount; i++) {
-        const image = await decentragram.methods.images(i).call()
+        const image = await decentragram.methods.images(i).call();
+        console.log(image);
         this.setState({
           images: [...this.state.images, image]
         })
@@ -81,18 +90,20 @@ class App extends Component {
     console.log("Submitting file to ipfs...")
 
     //adding file to the IPFS
-    ipfs.add(this.state.buffer, (error, result) => {
+    ipfs.add(this.state.buffer, async(error, result) => {
       console.log('Ipfs result', result)
       if(error) {
-        // alert(error);
+        alert(error);
         console.error(error)
-        return
-      }
+      return
+    }
       
       this.setState({ loading: true })
       this.state.decentragram.methods.uploadImage(result[0].hash, description).send({ from: this.state.account }).on('transactionHash', (hash) => {
         this.setState({ loading: false })
       })
+      console.log("debug");
+      await this.loadBlockchainData();
     })
   }
 
@@ -109,7 +120,7 @@ class App extends Component {
       account: '',
       decentragram: null,
       images: [],
-      loading: true
+      loading: true,
     }
 
     this.uploadImage = this.uploadImage.bind(this)

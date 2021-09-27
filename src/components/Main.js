@@ -4,6 +4,7 @@ import Identicon from 'identicon.js';
 class Main extends Component {
 
   render() {
+    console.log(this.props.images);
     return (
       <div className="container-fluid mt-5">
         <div className="row">
