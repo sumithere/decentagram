@@ -90,7 +90,7 @@ class App extends Component {
     console.log("Submitting file to ipfs...")
 
     //adding file to the IPFS
-    ipfs.add(this.state.buffer, async(error, result) => {
+    ipfs.add(this.state.buffer, (error, result) => {
       console.log('Ipfs result', result)
       if(error) {
         alert(error);
@@ -103,7 +103,7 @@ class App extends Component {
         this.setState({ loading: false })
       })
       console.log("debug");
-      await this.loadBlockchainData();
+      // await this.loadBlockchainData();
     })
   }
 
